@@ -1,7 +1,9 @@
-const { ApolloServer, UserInputError, gql } = require('apollo-server')
+const { ApolloServer, UserInputError, gql } = require('apollo-server-express')
 const { v1: uuid } = require('uuid')
+const path = require('path')
 const mongoose = require('mongoose')
 const express = require('express')
+const expressGraphQL = require('express-graphql');
 const cors = require('cors')
 const Product = require('./models/product')
 const User = require('./models/user')
@@ -14,6 +16,9 @@ const app = express()
 app.use(express.static('build'))
 app.use(cors())
 
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'build','index.html'));
+})
 console.log('connecting to', config.MONGODB_URI)
 
 const JWT_SECRET = 'NEED_HERE_A_SECRET_KEY'
@@ -390,7 +395,6 @@ const resolvers = {
 }
 
 const server = new ApolloServer({
-  playground: true,
   typeDefs,
   resolvers,
   context: async ({ req }) => {
@@ -406,7 +410,10 @@ const server = new ApolloServer({
   }
 })
 
+server.applyMiddleware({ app })
+
 const PORT = process.env.PORT || 4000
-server.listen(PORT).then(({ url }) => {
-  console.log(`Server ready at ${url}`)
-})
+
+app.listen({ port: PORT }, () =>
+  console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
+)
