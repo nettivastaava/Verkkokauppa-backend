@@ -1,0 +1,3 @@
+afterAll(() => {
+    mongoose.connection.close()
+})
