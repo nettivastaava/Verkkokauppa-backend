@@ -122,47 +122,54 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-      productCount: () => Product.collection.countDocuments(),
-      allProducts: async (root, args) => {
-        const products = await Product.find({}).populate('comments')
+    productCount: () => Product.collection.countDocuments(),
+    allProducts: async (root, args) => {
+      const products = await Product.find({}).populate('comments')     
 
-        if (!args.category) {
-          return products.sort((p1, p2) => p2.units_sold - p1.units_sold)
-        } else {
-          return products.filter(product => product.categories.includes(args.category))          
-        }
-      },
-      me: async (root, args, context) => {
-        return await context.currentUser
-      },
-      allCategories: async () => {
-        const products = await Product.find({})
-        const categories = products.map(product => product.categories)
-        .reduce((previous, current) => previous.concat(current))
+      /* const products = await Product.find({}).populate({
+        path : 'comments',
+        populate : { path : 'user' }
+      }).exec(function (err, res) {
+        console.log('error')
+      }) */
 
-        const uniqueCategories = [...new Set(categories)];
-        return uniqueCategories
-      },
-      findProduct: async (root, args) => {
-        const product = await Product.findOne({ name: args.name })
-        return product
-      },
-      allComments: async (root, args) => {
-        const comments = await Comment.find({})
-        console.log(comments)
-        
-        return comments
-      },
-      totalPrice: async (root, args, context) => {
-        const shoppingCart = await context.currentUser.cart
-        var total = 0
-
-        for (var i = 0; i < shoppingCart.length; i++) {
-          total += (shoppingCart[i].amount * shoppingCart[i].price)
-        }
-
-        return total
+      if (!args.category) {
+        return products.sort((p1, p2) => p2.units_sold - p1.units_sold)
+      } else {
+        return products.filter(product => product.categories.includes(args.category))          
       }
+    },
+    me: async (root, args, context) => {
+      return await context.currentUser
+    },
+    allCategories: async () => {
+      const products = await Product.find({})
+      const categories = products.map(product => product.categories)
+      .reduce((previous, current) => previous.concat(current))
+
+      const uniqueCategories = [...new Set(categories)];
+      return uniqueCategories
+    },
+    findProduct: async (root, args) => {
+      const product = await Product.findOne({ name: args.name })
+      return product
+    },
+    allComments: async (root, args) => {
+      const comments = await Comment.find({})
+      console.log(comments)
+        
+      return comments
+    },
+    totalPrice: async (root, args, context) => {
+      const shoppingCart = await context.currentUser.cart
+      var total = 0
+
+      for (var i = 0; i < shoppingCart.length; i++) {
+        total += (shoppingCart[i].amount * shoppingCart[i].price)
+      }
+
+      return total
+    }
   },
   Mutation: {
     addProduct: async (root, args) => {
