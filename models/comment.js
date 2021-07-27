@@ -14,6 +14,11 @@ const schema = new mongoose.Schema({
         type: String,
         required: true,
         minlength: 1
+    },
+    grade: {
+        type: Number,
+        min: 1,
+        max: 5
     }
 })
 

@@ -39,6 +39,7 @@ const typeDefs = gql`
     user: String!
     product: String!
     content: String!
+    grade: Int!
     id: ID!
   }
 
@@ -77,6 +78,7 @@ const typeDefs = gql`
       product: String!
       user: String!
       content: String!
+      grade: Int!
     ): Comment
     addToCart(
       productName: String!
