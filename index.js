@@ -63,7 +63,7 @@ const resolvers = {
       return uniqueCategories
     },
     findProduct: async (root, args) => {
-      const product = await Product.findOne({ name: args.name })
+      const product = await Product.findOne({ name: args.name }).populate('comments')
       return product
     },
     allComments: async (root, args) => {
@@ -190,11 +190,15 @@ const resolvers = {
     },
     addComment: async (root, args, context) => {
       const comment = new Comment({ ...args })
-      const product = await Product.findById(args.product)
+      const product = await Product.findById(args.product).populate('comments')
 
       try {
         await comment.save()
-        product.comments = product.comments.concat(comment)      
+        product.comments = product.comments.concat(comment) 
+        
+        const gradeSum = await product.comments.reduce((s, v) => s + v.grade, 0)
+        product.average_grade = await Math.round(gradeSum/product.comments.length*10)/10
+        
         await product.save()
       } catch (error) {
         throw new UserInputError(error.message, {

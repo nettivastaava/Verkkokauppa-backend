@@ -34,6 +34,11 @@ const schema = new mongoose.Schema({
     type: Number,
     required: true,
     min: 0
+  },
+  average_grade: {
+    type: Number,
+    min: 1,
+    max: 5
   }
 })
 

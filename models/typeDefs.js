@@ -10,6 +10,7 @@ const typeDefs = gql`
     description: String 
     comments: [Comment]!
     units_sold: Int!
+    average_grade: Float
   }
 
   type Query {
@@ -56,6 +57,7 @@ const typeDefs = gql`
       description: String
       comments: [String]!
       units_sold: Int!
+      average_grade: Float
     ): Product
     increaseQuantity(    
       name: String!    
