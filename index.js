@@ -324,14 +324,7 @@ const resolvers = {
         await Comment.findByIdAndRemove(product.comments[i].id)
 
         return updatedProduct
-      }
-      }
-
-      if (user.username === comment.user) {
-        await Comment.findByIdAndRemove(args.commentId)
-        const updatedProduct = await Product.findByIdAndUpdate(product.id, { $pull: { "comments": { id: args.commentId } } }, {new: true})  
-
-        return updatedProduct
+        } 
       }
     }
   }
