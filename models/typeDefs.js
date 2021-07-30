@@ -91,8 +91,7 @@ const typeDefs = gql`
     ): User
     checkout: User
     removeComment(
-      commentId: ID!
-      productId: ID!
+      productId: String!
     ): Product
   }
 `
