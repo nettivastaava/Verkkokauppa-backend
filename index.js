@@ -313,6 +313,18 @@ const resolvers = {
           }
         }
       }
+    },
+    removeComment: async (root, args, context) => {
+      const user = await context.currentUser
+      const comment = await Comment.findById(args.commentId)
+      const product = await Product.findById(args.productId)
+
+      if (user.username === comment.user) {
+        await Comment.findByIdAndRemove(args.commentId)
+        const updatedProduct = await Product.findByIdAndUpdate(product.id, { $pull: { "comments": { id: args.commentId } } }, {new: true})  
+
+        return updatedProduct
+      }
     }
   }
 }
