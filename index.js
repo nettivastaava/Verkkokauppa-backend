@@ -245,7 +245,6 @@ const resolvers = {
                 invalidArgs: args,
               })
             }
-
           }
         }
       }
