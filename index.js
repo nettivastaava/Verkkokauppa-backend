@@ -320,10 +320,18 @@ const resolvers = {
 
       for (var i = 0; i < product.comments.length; i++) {
         if (product.comments[i].user === user.username) {
-        const updatedProduct = await Product.findByIdAndUpdate(product.id, { $pull: { "comments": { id: product.comments[i].id } } }, {new: true})  
-        await Comment.findByIdAndRemove(product.comments[i].id)
+          const updatedProduct = await Product.findByIdAndUpdate(product.id, { $pull: { "comments": { id: product.comments[i].id } } }, {new: true})  
+          await Comment.findByIdAndRemove(product.comments[i].id)
 
-        return updatedProduct
+          const productUpdatedGrade = await Product.findById(args.productId).populate('comments')
+
+          const gradeSum = await productUpdatedGrade.comments.reduce((s, v) => s + v.grade, 0)
+          console.log('SUMMA ', gradeSum)
+          productUpdatedGrade.average_grade = await Math.round(gradeSum/productUpdatedGrade.comments.length*10)/10
+          
+          await productUpdatedGrade.save()
+
+          return productUpdatedGrade
         } 
       }
     }
