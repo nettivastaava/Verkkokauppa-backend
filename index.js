@@ -22,7 +22,7 @@ app.get('*', (req, res) => {
 })
 console.log('connecting to', config.MONGODB_URI)
 
-const JWT_SECRET = 'NEED_HERE_A_SECRET_KEY'
+const JWT_SECRET = process.env.SECRET
 
 mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
   .then(() => {
