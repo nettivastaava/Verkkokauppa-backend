@@ -324,8 +324,11 @@ const resolvers = {
           const productUpdatedGrade = await Product.findById(args.productId).populate('comments')
 
           const gradeSum = await productUpdatedGrade.comments.reduce((s, v) => s + v.grade, 0)
-          console.log('SUMMA ', gradeSum)
-          productUpdatedGrade.average_grade = await Math.round(gradeSum/productUpdatedGrade.comments.length*10)/10
+          if (gradeSum === 0) {
+            productUpdatedGrade.average_grade = null
+          } else {
+            productUpdatedGrade.average_grade = await Math.round(gradeSum/productUpdatedGrade.comments.length*10)/10
+          }
           
           await productUpdatedGrade.save()
 
