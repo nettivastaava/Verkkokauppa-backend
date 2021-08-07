@@ -93,6 +93,11 @@ const typeDefs = gql`
     removeComment(
       productId: String!
     ): Product
+    changePassword(
+      oldPassword: String!
+      newPassword: String!
+      confirmNew: String!
+    ): User
   }
 `
 

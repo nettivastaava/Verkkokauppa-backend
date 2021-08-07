@@ -335,6 +335,21 @@ const resolvers = {
           return productUpdatedGrade
         } 
       }
+    },
+    changePassword: async (roots, args, context) => {
+      const user = await context.currentUser
+
+      const passwordCorrect = user === null
+        ? false
+        : await bcrypt.compare(args.oldPassword, user.passwordHash)
+
+      if (passwordCorrect && args.newPassword === args.confirmNew) {
+        const saltRounds = 10
+        const passwordHash = await bcrypt.hash(args.newPassword, saltRounds)
+
+        user.passwordHash = passwordHash
+        await user.save()
+      }
     }
   }
 }

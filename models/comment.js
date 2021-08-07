@@ -13,7 +13,8 @@ const schema = new mongoose.Schema({
     content: {
         type: String,
         required: true,
-        minlength: 1
+        minlength: 1,
+        maxLength: 1000
     },
     grade: {
         type: Number,
