@@ -349,7 +349,11 @@ const resolvers = {
 
         user.passwordHash = passwordHash
         await user.save()
+        return user
       }
+      throw new UserInputError(error.message, {
+        invalidArgs: args,
+      })
     }
   }
 }
