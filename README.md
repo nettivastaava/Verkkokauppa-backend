@@ -1,0 +1,3 @@
+# Verkkokauppa-backend
+
+Verkkokauppasovellukseni backend
