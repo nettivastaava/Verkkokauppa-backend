@@ -27,6 +27,7 @@ const typeDefs = gql`
     username: String!
     password: String!
     id: ID!
+    role: String!
     cart: [ProductInCart]!
   }
 
@@ -55,9 +56,6 @@ const typeDefs = gql`
       quantity: Int!
       categories: [String!]!
       description: String
-      comments: [String]!
-      units_sold: Int!
-      average_grade: Float
     ): Product
     increaseQuantity(    
       name: String!    
@@ -71,6 +69,7 @@ const typeDefs = gql`
       username: String!
       password: String!
       passwordConf: String!
+      role: String
     ): User
     login(
       username: String!

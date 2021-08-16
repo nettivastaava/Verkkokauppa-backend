@@ -1,9 +1,8 @@
-const { ApolloServer, UserInputError, gql } = require('apollo-server-express')
+const { ApolloServer, UserInputError } = require('apollo-server-express')
 const { v1: uuid } = require('uuid')
 const path = require('path')
 const mongoose = require('mongoose')
 const express = require('express')
-const expressGraphQL = require('express-graphql');
 const cors = require('cors')
 const Product = require('./models/product')
 const { typeDefs } = require('./models/typeDefs')
@@ -36,13 +35,6 @@ const resolvers = {
     productCount: () => Product.collection.countDocuments(),
     allProducts: async (root, args) => {
       const products = await Product.find({}).populate('comments')     
-
-      /* const products = await Product.find({}).populate({
-        path : 'comments',
-        populate : { path : 'user' }
-      }).exec(function (err, res) {
-        console.log('error')
-      }) */
 
       if (!args.category) {
         return products.sort((p1, p2) => p2.units_sold - p1.units_sold)
@@ -84,7 +76,12 @@ const resolvers = {
   },
   Mutation: {
     addProduct: async (root, args) => {
-      const product = new Product({ ...args })
+      const product = new Product({ 
+        ...args, 
+        units_sold: 0,
+        average_grade: null,
+        comments: []
+      })
 
       try {
         await product.save()
@@ -154,19 +151,36 @@ const resolvers = {
 
       const saltRounds = 10
       const passwordHash = await bcrypt.hash(args.password, saltRounds)
-   
-      const user = new User({
-        username: args.username,
-        passwordHash,
-        cart: []
-      })
 
-      return user.save()
+      if (args.role === "admin") {
+        const user = new User({
+          username: args.username,
+          passwordHash,
+          role: "admin",
+          cart: []
+        })  
+
+        return user.save()
         .catch(error => {
           throw new UserInputError(error.message, {
             invalidArgs: args,
           })
         })
+      } else {
+        const user = new User({
+          username: args.username,
+          passwordHash,
+          role: "user",
+          cart: []
+        })
+
+        return user.save()
+        .catch(error => {
+          throw new UserInputError(error.message, {
+            invalidArgs: args,
+          })
+        })
+      }
     },
     login: async (root, args) => {
       const user = await User.findOne({ username: args.username })

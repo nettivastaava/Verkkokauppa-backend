@@ -22,7 +22,6 @@ const schema = new mongoose.Schema({
   ],
   description: {
       type: String,
-      minLength: 3
   },
   comments: [
     {
