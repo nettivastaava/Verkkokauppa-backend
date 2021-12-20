@@ -1,3 +1,2 @@
 # Verkkokauppa-backend
-
-Verkkokauppasovellukseni backend
+Backend of [Web Store App](https://github.com/nettivastaava/Verkkokauppa)
